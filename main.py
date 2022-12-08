@@ -2,6 +2,7 @@ import requests
 import json
 import time
 
+from datetime import datetime
 from flask import Flask, request, Response
 
 import infinitecampus
@@ -10,9 +11,18 @@ MINUTE = 60  # in seconds
 TOKEN_EXPIRY = 3 * MINUTE
 
 
+def get_current_timedate() -> str:
+  now = datetime.now()
+  dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+  return dt_string
+
+
+def status_message(msg: str):
+  print(f"[{get_current_timedate()}]: {msg}")
+
 class Token:
 
-    def __init__(self, token, timestamp=None):
+    def __init__(self, token, timestamp = None):
         self.token = token
 
         # Generate the timestamp
@@ -60,6 +70,10 @@ def login():
 
     # Login credentials.
     username: str = inputs["username"]
+
+    
+    status_message(f"{username} accessed IC integration.")
+  
     password: str = inputs["password"]
 
     uphash = username_password_hash(username, password)
@@ -77,6 +91,12 @@ def login():
 
     # If it didn't exist or was expired, generate a new one.    
     resp = infinitecampus.login(username, password)
+
+    # Incorrect credentials
+    if (resp == None):
+        return Response("0", status=200, mimetype="text/plain", headers=FUCK_CORS)
+      
+  
     token_cache[uphash] = Token(resp)
 
     return Response(resp, status=200, mimetype="text/plain", headers=FUCK_CORS)
@@ -118,4 +138,5 @@ def get_multiple_grades(assign_id):
 
 
 if (__name__ == "__main__"):
+    print("probably need root to run as port 80")
     app.run(host='0.0.0.0', port=80)

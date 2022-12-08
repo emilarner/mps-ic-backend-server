@@ -124,6 +124,11 @@ def login(username, password) -> str:
   }
   
   response = httpx.post(url, headers=headers, data=payload)
+
+  # Authentication failed
+  if ("XSRF-TOKEN" not in response.cookies):
+    return None
+  
   json_text = json.dumps(dict(response.cookies))
   return base64.urlsafe_b64encode(json_text.encode()).decode()
 
