@@ -7,10 +7,6 @@ from flask import Flask, request, Response
 
 import infinitecampus
 
-MINUTE = 60  # in seconds
-TOKEN_EXPIRY = 3 * MINUTE
-
-
 def get_current_timedate() -> str:
   now = datetime.now()
   dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -20,25 +16,7 @@ def get_current_timedate() -> str:
 def status_message(msg: str):
   print(f"[{get_current_timedate()}]: {msg}")
 
-class Token:
-
-    def __init__(self, token, timestamp = None):
-        self.token = token
-
-        # Generate the timestamp
-        if (timestamp == None):
-            self.timestamp = self.now()
-        else:
-            self.timestamp = timestamp
-
-    def now(self) -> int:
-        return round(time.time())
-
-    def expired(self) -> bool:
-        return (self.now() >= (self.timestamp + TOKEN_EXPIRY))
-
-
-token_cache = {
+classes_cache = {
   
 }
 
@@ -62,6 +40,8 @@ def username_password_hash(username, password):
 
 @app.route("/login/", methods=["POST"])
 def login():
+    global token_cache
+  
     inputs: dict = request.get_json(force=True)
 
     # If the args required are not given.
@@ -70,41 +50,36 @@ def login():
 
     # Login credentials.
     username: str = inputs["username"]
-
-    
     status_message(f"{username} accessed IC integration.")
-  
     password: str = inputs["password"]
-
-    uphash = username_password_hash(username, password)
-
-    resp = None
-
-    # If token is stored in cache.
-    if (uphash in token_cache):
-      token: Token = token_cache[uphash]
-
-      # If it's not expired, send it back
-      if (not token.expired()):
-        resp = token.token
-        return Response(resp, status=200, mimetype="text/plain", headers=FUCK_CORS)
-
+  
     # If it didn't exist or was expired, generate a new one.    
     resp = infinitecampus.login(username, password)
 
     # Incorrect credentials
     if (resp == None):
         return Response("0", status=200, mimetype="text/plain", headers=FUCK_CORS)
-      
-  
-    token_cache[uphash] = Token(resp)
 
     return Response(resp, status=200, mimetype="text/plain", headers=FUCK_CORS)
 
 
 @app.route("/get-classes/<username>/", methods=["POST"])
 def get_classes(username):
+    global classes_cache
+
+    # Instead of getting the classes each time, store the classes in memory and retrieve them when possible. It's not a problem, because of how classes will most likely never change.
+    if (username in classes_cache):
+        resp = Response(classes_cache[username], 
+                        mimetype="text/plain",
+                        headers=FUCK_CORS
+                      )
+
+        return resp
+  
     token: str = request.get_json(force=True)["token"]
+    classes = infinitecampus.get_classes(token)
+    classes_cache[username] = classes
+  
     return Response(infinitecampus.get_classes(token),
                     mimetype="text/plain",
                     headers=FUCK_CORS)

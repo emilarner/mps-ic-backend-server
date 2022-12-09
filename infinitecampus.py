@@ -31,7 +31,6 @@ def get_crits_and_grades(token: str, id: str) -> str:
     'Accept-Language': 'en-US,en;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Cookie': 'JSESSIONID=C1AD32C3EF93FD4E52ADF280BAE3F336; _did-566357552=8c907765-05ee-43e5-9a7a-09a8b3ec400f; XSRF-TOKEN=4f0ce87b-853b-4a10-a4fd-1989f881ab14; tool=; selection=; portalApp=student; portalLang=en; sis-cookie=!F1MJBSI38kdaeNUUQ+LwrCQnI3Hsxbh+QFUkPb5alD3jDIPrH0NvTwqVo0Ert/EQZsd6TwC3U3MzUOo=; appName=milwaukee',
     'Expires': '0',
     'Referer': f"https://milwaukeewi.infinitecampus.org/campus/apps/portal/student/classroom/tabs/{id}/grades",
     'Sec-Fetch-Dest': 'empty',
@@ -57,7 +56,6 @@ def get_crits_and_grades(token: str, id: str) -> str:
     'Accept-Language': 'en-US,en;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Cookie': 'JSESSIONID=C1AD32C3EF93FD4E52ADF280BAE3F336; _did-566357552=8c907765-05ee-43e5-9a7a-09a8b3ec400f; XSRF-TOKEN=4f0ce87b-853b-4a10-a4fd-1989f881ab14; tool=; selection=; portalApp=student; portalLang=en; sis-cookie=!F1MJBSI38kdaeNUUQ+LwrCQnI3Hsxbh+QFUkPb5alD3jDIPrH0NvTwqVo0Ert/EQZsd6TwC3U3MzUOo=; appName=milwaukee',
     'Expires': '0',
     'Referer': f"https://milwaukeewi.infinitecampus.org/campus/apps/portal/student/classroom/tabs/{id}/grades",
     'Sec-Fetch-Dest': 'empty',
@@ -91,8 +89,6 @@ def get_classes(token: str) -> str:
       'Accept-Language': 'en-US,en;q=0.9',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
-      # Requests sorts cookies= alphabetically
-      # 'Cookie': '_did-566357552=4876da50-00dd-401b-8f58-c49415c044ee; tool=; selection=; portalApp=student; JSESSIONID=C9048B2F21476CE3A046EA41A1DCE3AB; XSRF-TOKEN=3ed6b0c7-a064-417e-8bc1-3388f7faaa35; portalLang=en; sis-cookie=!gXvm/92HbyALEPkUQ+LwrCQnI3HsxTuYoMdFBpYBVrdpZU9uY3Qxyy639BAiV2p6gIuH8Vcw/5RQDMQ=; appName=milwaukee',
       'Expires': '0',
       'Referer': 'https://milwaukeewi.infinitecampus.org/campus/apps/portal/student/grades',
       'Sec-Fetch-Dest': 'empty',
@@ -119,8 +115,7 @@ def login(username, password) -> str:
   payload = f"username={username}&password={password_url}&portalUrl=portal%2Fstudents%2Fmilwaukee.jsp%3F%26rID%3D0.778348687641898&appName=milwaukee&url=nav-wrapper&lang=en&portalLoginPage=students"
   
   headers = {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    # 'Cookie': ''
+    'Content-Type': 'application/x-www-form-urlencoded'
   }
   
   response = httpx.post(url, headers=headers, data=payload)
@@ -141,7 +136,6 @@ def get_multiple_grades(token, assignment_id) -> str:
       'Accept-Language': 'en-US,en;q=0.9',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
-      # 'Cookie': '_did-566357552=8c907765-05ee-43e5-9a7a-09a8b3ec400f; tool=; selection=; portalApp=student; JSESSIONID=F84D9BA4ECBC96E4C67B477576326E6E; XSRF-TOKEN=4e8ac4c6-5baa-439a-be91-5257489efa3b; portalLang=en; sis-cookie=!F1MJBSI38kdaeNUUQ+LwrCQnI3Hsxbh+QFUkPb5alD3jDIPrH0NvTwqVo0Ert/EQZsd6TwC3U3MzUOo=; appName=milwaukee',
       'Expires': '0',
       'Referer': 'https://milwaukeewi.infinitecampus.org/campus/apps/portal/student/classroom/tabs/2661529/curriculum/resource/2356751/view?classroomSectionID=2661529',
       'Sec-Fetch-Dest': 'empty',
@@ -154,7 +148,7 @@ def get_multiple_grades(token, assignment_id) -> str:
   }
 
   params = {
-  #  'personID': '344558',
+  
   }
   
   response = requests.get(
